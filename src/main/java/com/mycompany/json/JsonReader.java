@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mycompany.Utilities;
 
 import java.lang.reflect.Type;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class JsonReader {
 
     /**
      * Парсит в Map json-ответ Мосбиржи, содержащий данные за текущую или последнюю (если текущая уже закончилась)
-     * торговую сессию. Пример такого json-ответа приведен в файле: /src/example/moex_usd_rub_marketdata.json.
+     * торговую сессию. Пример такого json-ответа приведен в файле: src/example/moex_usd_rub_marketdata.json.
      * Код данного метода станет гораздо понятнее, если читать его, параллельно смотря в этот пример.
      * @param jsonResponse json-ответ Мосбиржи, содержащий данные за текущую или последнюю (если текущая уже
      *                     закончилась) торговую сессию.
@@ -47,7 +48,7 @@ public class JsonReader {
 
     /**
      * Парсит в Map json-ответ Мосбиржи, содержащий данные за предыдущие торговые сессии. Пример такого json-ответа
-     * приведен в файле: /src/example/moex_history_data.json. Код данного метода станет гораздо понятнее, если читать его,
+     * приведен в файле: src/example/moex_history_data.json. Код данного метода станет гораздо понятнее, если читать его,
      * параллельно смотря в этот пример.
      * @param jsonResponse json-ответ Мосбиржи, содержащий данные за предыдущие торговые сессии.
      */
@@ -70,5 +71,28 @@ public class JsonReader {
         List<String> previousDayDataList = new Gson().fromJson(dataArray.get(0), listOfStrings); // данные за предпоследнюю торговую сессию
 
         return Utilities.zipToMap(columnsList, previousDayDataList); // объединяем два полученных List-а с данными в Map
+    }
+
+    /**
+     * Парсит json-ответ биржи Bybit, содержащий данные торгов криптовалютной пары. Пример такого json-ответа приведен
+     * в файле: src/example/bybit_wlkn_usdt_marketdata.json. Код данного метода станет гораздо понятнее, если читать
+     * его, параллельно смотря в этот пример.
+     * @param jsonResponse json-ответ биржи Bybit с данными торгов криптовалютной пары
+     * @return Map с распарсенными данными объекта "list" json-ответа
+     */
+    public static Map<String, String> parseBybitMarketDataToMap(String jsonResponse) {
+        // задаем тип переменной, в которую будут парсится данные из json-ответа, равным LinkedHashMap<String, String>
+        Type type = new TypeToken<LinkedHashMap<String, String>>(){}.getType();
+
+        // получаем json-ответ в виде JsonObject
+        JsonObject bybitResponse = JsonParser.parseString(jsonResponse).getAsJsonObject();
+        JsonObject result = bybitResponse.get("result").getAsJsonObject(); // из bybitResponse получаем свойство "result" типа JsonObject
+        JsonArray list = result.get("list").getAsJsonArray(); // из result получаем свойство "list" типа JsonArray, так как в нем лежат данные, которые нам нужно распарсит
+
+        // парсим содержимое list в ap. парсим из list.get(0), так как list - это массив типа JsonArray,
+        // состоящий из одного единственного элемента, таким образом мы получаем этот элемент и вот уже из него парсим
+        Map<String, String> marketData = new Gson().fromJson(list.get(0), type);
+
+        return marketData;
     }
 }

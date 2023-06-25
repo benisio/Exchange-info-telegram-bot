@@ -1,0 +1,25 @@
+{
+  "retCode": 0,
+  "retMsg": "OK",
+  "result": {
+    "category": "spot",
+    "list": [
+      {
+        "symbol": "WLKNUSDT",
+        "bid1Price": "0.02565",
+        "bid1Size": "10529.9",
+        "ask1Price": "0.02573",
+        "ask1Size": "259.56",
+        "lastPrice": "0.02574",
+        "prevPrice24h": "0.02546",
+        "price24hPcnt": "0.0110",
+        "highPrice24h": "0.02649",
+        "lowPrice24h": "0.02536",
+        "turnover24h": "125622.5601886",
+        "volume24h": "4877032.96"
+      }
+    ]
+  },
+  "retExtInfo": {},
+  "time": 1687366638707
+}

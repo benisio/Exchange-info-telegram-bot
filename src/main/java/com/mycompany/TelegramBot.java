@@ -66,8 +66,17 @@ public class TelegramBot extends TelegramLongPollingBot {
             switch (text) {
                 case "/start" -> {
                     addUser(userChatId);
-                    String quotesInfoMessage = quotes.getQuotesInfoMessage();
-                    send(userChatId, quotesInfoMessage);
+
+                    // обновляем котировки, если они неактуальны
+                    if (!quotes.isRelevant()) {
+                        quotes.getRelevantQuotes();
+                    }
+
+                    // КАК ЛУЧШЕ СДЕЛАТЬ ? ОТПРАВЛЯТЬ КРИПТУ И ФИАТ В ОДНОМ СООБЩЕНИИ ИЛИ В РАЗНЫХ???
+
+                    // отправляем сообщения пользователю
+                    send(userChatId, quotes.getFiatCurrenciesQuotesMessage());
+                    send(userChatId, quotes.getCryptocurrenciesQuotesMessage());
                 }
                 case "/exit" -> {
                     send(userChatId, "Бот остановлен !");
@@ -111,8 +120,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             startTime = startTime.plusDays(1);
         }
 
-        // Задача (task) для выполнения по таймеру MyTimer. Суть задачи: получаем котировки и рассылаем сообщение с ними всем юзерам
-        MyTimer.MyTimerTask sendQuotesInfoMessageDailyTask = () -> sendToAll(quotes.getQuotesInfoMessage());
+        // Задача (task) для выполнения по таймеру MyTimer.
+        // Суть задачи: получаем котировки фиатных валют и крипты и рассылаем сообщение с ними всем юзерам
+        MyTimer.MyTimerTask sendQuotesInfoMessageDailyTask = () -> {
+            sendToAll(quotes.getFiatCurrenciesQuotesMessage());
+            sendToAll(quotes.getCryptocurrenciesQuotesMessage());
+        };
+
         new MyTimer().schedule(sendQuotesInfoMessageDailyTask, startTime, period, unit);
     }
 

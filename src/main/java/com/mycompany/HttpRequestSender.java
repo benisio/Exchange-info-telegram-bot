@@ -1,6 +1,7 @@
 package com.mycompany;
 
 import com.mycompany.currency.MoexCurrencyPair;
+import com.mycompany.currency.BybitCryptocurrencyPair;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -60,6 +61,29 @@ public class HttpRequestSender {
             // автоматически приводит дату к такому формату
             url = new URL("https://iss.moex.com/iss/history/engines/currency/markets/selt/boards/CETS/securities/" +
                     ticker + ".json?iss.meta=off&from=" + fromDate + "&till=" + tillDate + "&sort_order=desc");
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setConnectTimeout(10000); //
+            connection.setReadTimeout(10000);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return connection;
+    }
+
+    /** Отправляет http-запрос к API биржи Bybit на получение биржевых данных о торгах данной
+     * валютной пары за текущую торговую сессию.
+     * @param currencyPair - валютная пара на бирже Bybit
+     */
+    public static HttpURLConnection newBybitMarketDataRequest(BybitCryptocurrencyPair currencyPair) {
+        String ticker = currencyPair.getTicker();
+        final URL url;
+        final HttpURLConnection connection;
+        try {
+            url = new URL("https://api.bybit.com/v5/market/tickers?category=spot&symbol=" + ticker);
 
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
