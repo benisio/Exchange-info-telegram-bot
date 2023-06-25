@@ -25,7 +25,7 @@ public class Application {
             e.printStackTrace();
         }
 
-        // планируем автоматическую отправку ботом сообщения с котировкой USD/RUB ежедневно в 11:00 по мск
-        bot.getController().setTaskTimerOn("11:00:00 Europe/Moscow", 1, TimeUnit.DAYS);
+        // планируем автоматическую отправку ботом сообщения с котировками ежедневно в 11:00 по мск
+        bot.sendExchangeInfoToAllUsersAt("11:00:00 Europe/Moscow", 1, TimeUnit.DAYS);
     }
 }
