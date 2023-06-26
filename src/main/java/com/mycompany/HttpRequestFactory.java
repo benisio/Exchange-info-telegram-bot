@@ -9,7 +9,7 @@ import java.net.URL;
 import java.time.LocalDate;
 
 /**
- * Класс, содержащий статичные методы, создающие различные GET-запросы к API Мосбиржи (ISS MOEX API).
+ * Класс, содержащий статичные методы, создающие различные GET-запросы к биржам.
  */
 public class HttpRequestSender {
 
@@ -21,7 +21,7 @@ public class HttpRequestSender {
     /**
      * Отправляет http-запрос к API Мосбиржи (ISS MOEX API) на получение биржевых данных о торгах данной
      * валютной пары за текущую или последнюю (если текущая уже закончилась) торговую сессию. Пример ответа на такой
-     * запрос приведен в файле: /src/example/moex_usd_rub_marketdata.json.
+     * запрос приведен в файле: src/example/moex_usd_rub_marketdata.json.
      * @param currencyPair - валютная пара, для которой отправляем запрос
      */
     public static HttpURLConnection newLastTradingDayDataRequest(MoexCurrencyPair currencyPair) {
@@ -47,7 +47,7 @@ public class HttpRequestSender {
     /**
      * Отправляет http-запрос к API Мосбиржи (ISS MOEX API) на получение биржевых данных о торгах данной
      * валютной пары за предыдущие торговые сессии в указанном диапазоне дат. Пример ответа на такой запрос приведен
-     * в файле: /src/example/moex_history_data.json.
+     * в файле: src/example/moex_history_data.json.
      * @param currencyPair - валютная пара, для которой отправляем запрос
      * @param fromDate - начальная дата диапазона дат, за который хотим получить данные о торгах
      * @param tillDate - конечная дата диапазона дат, за который хотим получить данные о торгах (что если сюда передать сегодняшнюю дату ???)
@@ -75,7 +75,8 @@ public class HttpRequestSender {
     }
 
     /** Отправляет http-запрос к API биржи Bybit на получение биржевых данных о торгах данной
-     * валютной пары за текущую торговую сессию.
+     * валютной пары за текущую торговую сессию. Пример ответа на такой запрос приведен в файле:
+     * src/example/bybit_wlkn_usdt_marketdata.json.
      * @param currencyPair - валютная пара на бирже Bybit
      */
     public static HttpURLConnection newBybitMarketDataRequest(BybitCryptocurrencyPair currencyPair) {

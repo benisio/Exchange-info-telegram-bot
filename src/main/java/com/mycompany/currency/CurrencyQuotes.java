@@ -3,8 +3,6 @@ package com.mycompany.currency;
 import com.mycompany.Utilities;
 import com.mycompany.my.MyTimer;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +18,7 @@ import static com.mycompany.currency.CalculatedQuoteCurrencyPair.*;
  */
 public class CurrencyQuotes {
 
-    // заводим отделные мапы для крипты и фиатных валют, так как будем отправлять их котировки в разных сообщениях
+    // заводим отдельные мапы для крипты и фиатных валют, так как будем отправлять их котировки в разных сообщениях
     private Map<CurrencyPair, Double> currencyQuotes = new LinkedHashMap<>();
     private Map<CurrencyPair, Double> cryptoCurrencyQuotes = new LinkedHashMap<>();
 
@@ -31,40 +29,37 @@ public class CurrencyQuotes {
     // сохраненные котировки.
     private volatile boolean quotesRelevant;
 
-    public boolean isRelevant() {
-        return quotesRelevant;
-    }
-
     // получает актуальные котировки для каждой валютной пары
     public void getRelevantQuotes() {
-        // получаем и кладем в map
+        if (!quotesRelevant) { // если котировки неактуальны, получаем актуальные и кладем в mapы
 
-        // фиатные валюты
-        currencyQuotes.put(USD_RUB,   USD_RUB.getQuote());
-        currencyQuotes.put(EUR_RUB,   EUR_RUB.getQuote());
-        currencyQuotes.put(CNY_RUB,   CNY_RUB.getQuote());
-        currencyQuotes.put(TRY_RUB,   TRY_RUB.getQuote());
-        currencyQuotes.put(EUR_USD,   EUR_USD.getQuote());
-        currencyQuotes.put(USD_KZT,   USD_KZT.getQuote());
-        currencyQuotes.put(RUB_KZT,   RUB_KZT.getQuote());
+            // фиатные валюты
+            currencyQuotes.put(USD_RUB,   USD_RUB.getQuote());
+            currencyQuotes.put(EUR_RUB,   EUR_RUB.getQuote());
+            currencyQuotes.put(CNY_RUB,   CNY_RUB.getQuote());
+            currencyQuotes.put(TRY_RUB,   TRY_RUB.getQuote());
+            currencyQuotes.put(EUR_USD,   EUR_USD.getQuote());
+            currencyQuotes.put(USD_KZT,   USD_KZT.getQuote());
+            currencyQuotes.put(RUB_KZT,   RUB_KZT.getQuote());
 
-        // крипта
-        cryptoCurrencyQuotes.put(BTC_USDT,  BTC_USDT.getQuote());
-        cryptoCurrencyQuotes.put(ETH_USDT,  ETH_USDT.getQuote());
-        cryptoCurrencyQuotes.put(SOL_USDT,  SOL_USDT.getQuote());
-        cryptoCurrencyQuotes.put(WLKN_USDT, WLKN_USDT.getQuote());
+            // крипта
+            cryptoCurrencyQuotes.put(BTC_USDT,  BTC_USDT.getQuote());
+            cryptoCurrencyQuotes.put(ETH_USDT,  ETH_USDT.getQuote());
+            cryptoCurrencyQuotes.put(SOL_USDT,  SOL_USDT.getQuote());
+            cryptoCurrencyQuotes.put(WLKN_USDT, WLKN_USDT.getQuote());
 
-        quotesRelevant = true; // устанавливаем флаг актуальности котировок
+            quotesRelevant = true; // устанавливаем флаг актуальности котировок
 
-        // длительность актуальности котировок
-        final int quotesRelevanceDuration = 5; // в минутах
-        // через 5 мин (длительность актуальности котировок, quotesRelevanceDuration) сбрасываем флаг актуальности
-        new MyTimer().schedule(() -> quotesRelevant = false, quotesRelevanceDuration, TimeUnit.MINUTES);
+            // длительность актуальности котировок
+            final int quotesRelevanceDuration = 5; // в минутах
+            // через 5 мин (длительность актуальности котировок, quotesRelevanceDuration) сбрасываем флаг актуальности
+            new MyTimer().schedule(() -> quotesRelevant = false, quotesRelevanceDuration, TimeUnit.MINUTES);
+        }
     }
 
     // Возвращает текст сообщения с котировками, которое будет отправлено пользователям
     public String getFiatCurrenciesQuotesMessage() {
-        String quotesUpdateTime = getQuotesUpdateTime(); // получаем время последнего обновления котировок
+        String quotesUpdateTime = USD_RUB.getQuotesUpdateTime(); // получаем время последнего обновления котировок
 
         // формируем текст сообщения для отправки пользователям
         String messageHeader = "Курсы валют на " + quotesUpdateTime + " по мск:\n";
@@ -78,19 +73,6 @@ public class CurrencyQuotes {
         String messageHeader = "Котировки криптовалют на бирже Bybit:\n";
         String messageBody = buildMessageBody(cryptoCurrencyQuotes);
         return messageHeader + messageBody;
-    }
-
-    // получает на Мосбирже время последнего обновления котировок (UPDATETIME) и возвращает его в формате "11:00"
-    // перенести код этого метода в метод USD_RUB.getQuotesUpdateTime() ?
-    private String getQuotesUpdateTime() {
-        // получаем на Мосбирже время последнего обновления в формате "11:00:00"
-        var parseFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        String quotesUpdateTimeStr = USD_RUB.getQuotesUpdateTime();
-        var quotesUpdateTime = LocalTime.parse(quotesUpdateTimeStr, parseFormatter);
-
-        // форматируем полученное время - убираем секунды
-        var timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        return timeFormatter.format(quotesUpdateTime);
     }
 
     // формирует тело текста (без заголовка) сообщения с котировками, которое будет отправлено пользователям

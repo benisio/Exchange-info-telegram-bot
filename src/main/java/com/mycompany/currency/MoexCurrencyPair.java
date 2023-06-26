@@ -6,8 +6,10 @@ import com.mycompany.json.JsonReader;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 
@@ -67,7 +69,7 @@ public enum MoexCurrencyPair implements CurrencyPair {
      */
     @Override
     public double getQuote() {
-        getDataFromMoex();
+        getMarketDataFromMoex();
 
         double quote;
         Optional<Double> optLastMarketPrice = getLastMarketPrice();
@@ -81,27 +83,32 @@ public enum MoexCurrencyPair implements CurrencyPair {
     }
 
     // загружает в мапы данные Мосбиржи о текущей/последней и о предыдущей торговой сессии
-    private void getDataFromMoex() {
+    private void getMarketDataFromMoex() {
         lastTradingDayData = getLastTradingDayDataFromMoex();
         previousDayData = getPreviousDayDataFromMoex();
     }
 
     /**
      * Возвращает время последнего обновления котировок (свойство UPDATETIME из json-ответа Мосбиржи) за текущую или
-     * последнюю (если текущая уже завершилась) торговую сессию данной валютной пары. Пример такого json-ответа
-     * приведен в файле: /src/example/moex_usd_rub_marketdata.json
+     * последнюю (если текущая уже завершилась) торговую сессию данной валютной пары. Формат возвращаемого
+     * времени: HH:mm. Пример такого json-ответа приведен в файле: src/example/moex_usd_rub_marketdata.json.
      * При вызове данного метода в середине торговой сессии, как правило, это время отстает от фактического примерно
      * на 15 мин - таково ограничение Мосбиржи на использование её API на бесплатной основе. При вызове данного метода
      * после окончания торговой сессии (при условии, что следующая торговая сессия еще не началась), возвращает время
-     * окончания торговой сессии. Формат возвращаемого времени: 11:00:00
-     *
-     * после окончания торговой сессии это время отличается от одной валютной пары к другой
+     * окончания торговой сессии.
      *
      * @see #getLastMarketPrice()
      * @return String с временем
      */
     public String getQuotesUpdateTime() {
-        return getValueFromLastTradingDayData("UPDATETIME");
+        // получаем на Мосбирже время последнего обновления в формате "HH:mm:ss"
+        var parseFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String quotesUpdateTimeStr = getValueFromLastTradingDayData("UPDATETIME");
+        var quotesUpdateTime = LocalTime.parse(quotesUpdateTimeStr, parseFormatter);
+
+        // форматируем полученное время - убираем секунды
+        var timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        return timeFormatter.format(quotesUpdateTime);
     }
 
     /**

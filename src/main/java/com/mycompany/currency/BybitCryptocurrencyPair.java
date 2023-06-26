@@ -30,12 +30,12 @@ public enum BybitCryptocurrencyPair implements CurrencyPair {
     }
 
     private Double getLastMarketPrice() {
-        Map<String, String> currencyPairData = getCurrencyPairMarketDataFromBybit();
+        Map<String, String> currencyPairData = getMarketDataFromBybit();
         String lastPriceStr = currencyPairData.get("lastPrice");
         return Double.parseDouble(lastPriceStr);
     }
 
-    private Map<String, String> getCurrencyPairMarketDataFromBybit() {
+    private Map<String, String> getMarketDataFromBybit() {
         String bybitMarketDataJsonResponse = Utilities.readResponse(HttpRequestSender.newBybitMarketDataRequest(this));
         return JsonReader.parseBybitMarketDataToMap(bybitMarketDataJsonResponse);
     }

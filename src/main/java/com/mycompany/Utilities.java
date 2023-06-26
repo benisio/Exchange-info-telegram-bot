@@ -16,18 +16,37 @@ public final class Utilities {
      */
     private Utilities() {}
 
-    // выводит содержимое map в консоль
+    /**
+     * Выводит содержимое Map в консоль.
+     */
     public static <K, V> void printMap(Map<K, V> map) {
         map.forEach((k, v) -> System.out.println(k + " : " + v));
     }
 
-    // округляет число типа double до 2 знаков после запятой и конвертирует в String
+    /**
+     * Округляет число типа double до 2 или 3 знаков после запятой в зависимости от величины этого числа, и конвертирует
+     * его в String.
+     */
     public static String formatDouble(Double d) {
-        return new DecimalFormat("#.##").format(d); // эта реализация меняет десятичную точку на запятую и убирает незначащие нули
+        double threshold = 1.5d; // пороговое значение
+
+        // если число больше порогового значения, округляем его до 2-х знаков после запятой, если меньше - до 3-х
+        if (d >= threshold) {
+            return new DecimalFormat("#.##").format(d); // эта реализация меняет десятичную точку на запятую и убирает незначащие нули
+        } else {
+            return new DecimalFormat("#.###").format(d);
+        }
+
         //return String.format("%.2f", d); // эта реализация меняет десятичную точку на запятую и НЕ убирает незначащие нули
     }
 
-    // объединяет два списка в Map
+    /**
+     * Объединяет два списка в Map.
+     * @param keys - список, элементы которого станут ключами Map
+     * @param values - список, элементы которого станут значениями Map
+     * @return результирующую Map, в которой ключи - элементы первого списка, а значения - элементы второго списка
+     * @throws IllegalArgumentException if lists sizes aren't equal
+     */
     public static <K, V> Map<K, V> zipToMap(List<K> keys, List<V> values) {
         if (keys.size() == values.size()) {
             Map<K, V> map = new LinkedHashMap<>(keys.size());
@@ -41,7 +60,7 @@ public final class Utilities {
     }
 
     /**
-     * Читает и возвращает ответ на http-запрос
+     * Читает и возвращает ответ на http-запрос.
      * @param connection - соединение, соответствующее http-запросу
      */
     public static String readResponse(HttpURLConnection connection) {
