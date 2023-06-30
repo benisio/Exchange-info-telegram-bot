@@ -1,7 +1,6 @@
 package com.mycompany.currency;
 
-import com.mycompany.HttpRequestSender;
-import com.mycompany.Utilities;
+import com.mycompany.HttpRequestFactory;
 import com.mycompany.json.JsonReader;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,19 +23,30 @@ public enum BybitCryptocurrencyPair implements CurrencyPair {
     private final String firstCurrencyCode; // код базовой (первой из двух) валюты
     private final String secondCurrencyCode; // код второй валюты
 
+    /**
+     * Возвращает котировку данной криптовалютной пары.
+     */
     @Override
     public double getQuote() {
         return getLastMarketPrice();
     }
 
+    /**
+     * Возвращает цену последней сделки (котировка "lastPrice" из json-ответа биржи Bybit) за текущую торговую сессию
+     * по данной валютной паре. Пример такого json-ответа приведен в файле:
+     * src/example/bybit_wlkn_usdt_marketdata.json
+     */
     private Double getLastMarketPrice() {
         Map<String, String> currencyPairData = getMarketDataFromBybit();
         String lastPriceStr = currencyPairData.get("lastPrice");
         return Double.parseDouble(lastPriceStr);
     }
 
+    /**
+     * Возвращает Map с биржевыми данными торгов по данной криптовалютной паре.
+     */
     private Map<String, String> getMarketDataFromBybit() {
-        String bybitMarketDataJsonResponse = Utilities.readResponse(HttpRequestSender.newBybitMarketDataRequest(this));
+        String bybitMarketDataJsonResponse = HttpRequestFactory.newBybitMarketDataRequest(this);
         return JsonReader.parseBybitMarketDataToMap(bybitMarketDataJsonResponse);
     }
 
