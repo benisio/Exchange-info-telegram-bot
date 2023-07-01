@@ -1,8 +1,13 @@
 package com.mycompany;
 
+import com.mycompany.currency.*;
+import com.mycompany.model.User;
 import com.mycompany.currency.CurrencyQuotes;
 import com.mycompany.config.TelegramBotConfig;
 import com.mycompany.my.MyTimer;
+import com.mycompany.service.UserService;
+import com.mycompany.service.UserServiceImpl;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -15,6 +20,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import static com.mycompany.currency.BybitCryptocurrencyPair.*;
+import static com.mycompany.currency.CalculatedQuoteCurrencyPair.*;
+import static com.mycompany.currency.MoexCurrencyPair.*;
+
 /**
  * Класс, описывающий Telegram-бота.
  */
@@ -22,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final TelegramBotConfig botConfig;
+    private UserService userService = new UserServiceImpl();
 
     // котировки валютных пар
     private CurrencyQuotes quotes = new CurrencyQuotes();
@@ -45,6 +55,27 @@ public class TelegramBot extends TelegramLongPollingBot {
         return botConfig.getBotToken(); // этот параметр можно получить у телеграм-бота @BotFather https://t.me/BotFather
     }
 
+    private User user = readUserFromDataBase();
+
+    // имитируем чтение инфы из базы
+    private User readUserFromDataBase() {
+        Map<String, Boolean> settings = new HashMap<>();
+        settings.put(USD_RUB.name(), false);
+        settings.put(EUR_RUB.name(), false);
+        settings.put(CNY_RUB.name(), false);
+        settings.put(TRY_RUB.name(), false);
+        settings.put(EUR_USD.name(), false);
+        settings.put(USD_KZT.name(), false);
+        settings.put(RUB_KZT.name(), false);
+        settings.put(USD_BYN.name(), false);
+        settings.put(BTC_USDT.name(), true);
+        settings.put(ETH_USDT.name(), true);
+        settings.put(SOL_USDT.name(), false);
+        settings.put(WLKN_USDT.name(), true);
+
+        return new User(3, "den", "chik", "pyramid", settings);
+    }
+
     // вызывается автоматически всякий раз при получении сообщения (update) от юзера
     @Override
     public void onUpdateReceived(Update update) {
@@ -56,16 +87,29 @@ public class TelegramBot extends TelegramLongPollingBot {
             // обработка нажатий пунктов меню
             switch (messageText) {
                 case "/start" -> {
-                    addUser(chatId);
+                    if (!userExists(chatId)) {
+                        addUser(chatId); // ???????? нужна ли эта строка ?
+
+                        String firstName = update.getMessage().getFrom().getFirstName();
+                        String lastName = update.getMessage().getFrom().getLastName();
+                        String userName = update.getMessage().getFrom().getUserName();
+                        userService.add(new User(chatId, firstName, lastName, userName));
+                    }
 
                     // отправляем сообщения с котировками фиатных валют и крипты пользователю
                     quotes.getRelevantQuotes();
                     sendMessage(chatId, quotes.getFiatCurrenciesQuotesMessage());
                     sendMessage(chatId, quotes.getCryptocurrenciesQuotesMessage());
                 }
+
+                case "/settings" -> {
+                    sendMessage(chatId, "Представим, что появилась клавиатура !");
+                }
+
                 case "/exit" -> {
                     sendMessage(chatId, "Бот остановлен !");
                     deleteUser(chatId);
+                    userService.delete(new User(chatId));
                 }
             }
         }
@@ -79,6 +123,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     // удаляет chatId юзера
     public void deleteUser(long userChatId) {
         userChatIds.remove(userChatId);
+    }
+
+    private boolean userExists(long chatId) {
+        return userService.getByChatId(chatId) != null;
     }
 
     /**

@@ -54,7 +54,7 @@
         <!-- с прописанным здесь тегом <type>pom</type> не подгружаются классы Session и SessionFactory -->
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>6.1.7.Final</version>
         </dependency>

@@ -1,5 +1,6 @@
 package com.mycompany;
 
+import com.mycompany.config.HibernateSessionFactoryUtil;
 import com.mycompany.config.TelegramBotConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,6 +17,8 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
+
+        HibernateSessionFactoryUtil.init();
 
         // создаем и регистрируем бота
         TelegramBot bot = new TelegramBot(new TelegramBotConfig());

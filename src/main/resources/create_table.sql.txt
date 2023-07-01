@@ -1,0 +1,21 @@
+DROP TABLE user_settings;
+
+CREATE TABLE IF NOT EXISTS public.user_settings
+(
+	user_chat_id bigint NOT NULL,
+    show_usd_rub boolean NOT NULL,
+    show_eur_rub boolean NOT NULL,
+    show_cny_rub boolean NOT NULL,
+    show_try_rub boolean NOT NULL,
+    show_eur_usd boolean NOT NULL,
+    show_usd_kzt boolean NOT NULL,
+    show_rub_kzt boolean NOT NULL,
+    show_btc_usdt boolean NOT NULL,
+    show_eth_usdt boolean NOT NULL,
+    show_sol_usdt boolean NOT NULL,
+    show_wlkn_usdt boolean NOT NULL,
+	CONSTRAINT user_chat_id_pk PRIMARY KEY (user_chat_id)
+);
+
+SELECT *
+FROM user_settings;
