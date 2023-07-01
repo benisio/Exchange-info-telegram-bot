@@ -58,24 +58,4 @@ public final class Utilities {
             throw new IllegalArgumentException("списки должны иметь одинаковые размеры");
         }
     }
-
-    /**
-     * Читает и возвращает ответ на http-запрос.
-     * @param connection - соединение, соответствующее http-запросу
-     */
-    public static String readResponse(HttpURLConnection connection) {
-        final StringBuilder content = new StringBuilder();
-
-        try (final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-
-        } catch (final Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return content.toString();
-    }
 }

@@ -1,5 +1,8 @@
 # Полезные ссылки по теме данного проекта
 
+### Документация по Bybit REST API
+https://bybit-exchange.github.io/docs/v5/market/tickers
+
 ### Всё, о чём должен знать разработчик Телеграм-ботов
 https://habr.com/ru/articles/543676/
 

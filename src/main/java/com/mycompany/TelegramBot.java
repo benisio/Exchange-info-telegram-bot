@@ -66,8 +66,11 @@ public class TelegramBot extends TelegramLongPollingBot {
             switch (text) {
                 case "/start" -> {
                     addUser(userChatId);
-                    String quotesInfoMessage = quotes.getQuotesInfoMessage();
-                    send(userChatId, quotesInfoMessage);
+
+                    // отправляем сообщения с котировками фиатных валют и крипты пользователю
+                    quotes.getRelevantQuotes();
+                    send(userChatId, quotes.getFiatCurrenciesQuotesMessage());
+                    send(userChatId, quotes.getCryptocurrenciesQuotesMessage());
                 }
                 case "/exit" -> {
                     send(userChatId, "Бот остановлен !");
@@ -111,10 +114,16 @@ public class TelegramBot extends TelegramLongPollingBot {
             startTime = startTime.plusDays(1);
         }
 
-        // Задача (task) для выполнения по таймеру MyTimer. Суть задачи: получаем котировки и рассылаем сообщение с ними всем юзерам
-        MyTimer.MyTimerTask sendQuotesInfoMessageDailyTask = () -> sendToAll(quotes.getQuotesInfoMessage());
         new MyTimer().schedule(sendQuotesInfoMessageDailyTask, startTime, period, unit);
     }
+
+    // Задача (task) для выполнения по таймеру MyTimer.
+    // Суть задачи: получаем котировки фиатных валют и крипты и рассылаем сообщение с ними всем юзерам
+    private MyTimer.MyTimerTask sendQuotesInfoMessageDailyTask = () -> {
+        quotes.getRelevantQuotes();
+        sendToAll(quotes.getFiatCurrenciesQuotesMessage());
+        sendToAll(quotes.getCryptocurrenciesQuotesMessage());
+    };
 
     /**
      * Отправляет сообщение всем зарегистрированным пользователям.

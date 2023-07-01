@@ -6,6 +6,11 @@ package com.mycompany.currency;
 public interface CurrencyPair {
 
     /**
+     * Возвращает тикер данной валютной пары
+     */
+    String getTicker();
+
+    /**
      * Возвращает котировку данной валютной пары
      */
     double getQuote();

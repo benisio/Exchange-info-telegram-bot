@@ -1,7 +1,6 @@
 package com.mycompany.currency;
 
-import com.mycompany.HttpRequestSender;
-import com.mycompany.Utilities;
+import com.mycompany.HttpRequestFactory;
 import com.mycompany.json.JsonReader;
 import lombok.Getter;
 
@@ -69,7 +68,7 @@ public enum MoexCurrencyPair implements CurrencyPair {
      */
     @Override
     public double getQuote() {
-        getDataFromMoex();
+        getMarketDataFromMoex();
 
         double quote;
         Optional<Double> optLastMarketPrice = getLastMarketPrice();
@@ -83,7 +82,7 @@ public enum MoexCurrencyPair implements CurrencyPair {
     }
 
     // загружает в мапы данные Мосбиржи о текущей/последней и о предыдущей торговой сессии
-    private void getDataFromMoex() {
+    private void getMarketDataFromMoex() {
         lastTradingDayData = getLastTradingDayDataFromMoex();
         previousDayData = getPreviousDayDataFromMoex();
     }
@@ -114,7 +113,7 @@ public enum MoexCurrencyPair implements CurrencyPair {
     /**
      * Возвращает цену последней сделки (котировка LAST из json-ответа Мосбиржи) за текущую или последнюю (если текущая
      * уже завершилась) торговую сессию по данной валютной паре. Пример такого json-ответа приведен в файле:
-     * /src/example/moex_usd_rub_marketdata.json
+     * src/example/moex_usd_rub_marketdata.json
      * Данная котировка актуальна на момент времени, указанный в свойстве "UPDATETIME" json-ответа. Также это время
      * возвращает метод getQuotesUpdateTime().
      *
@@ -133,7 +132,7 @@ public enum MoexCurrencyPair implements CurrencyPair {
 
     /**
      * Возвращает цену закрытия (котировку CLOSE из json-ответа) предыдущей торговой сессии данной валютной пары.
-     * Пример такого json-ответа приведен в файле: /src/example/moex_history_data.json
+     * Пример такого json-ответа приведен в файле: src/example/moex_history_data.json
      */
     private double getPreviousDayClosePrice() {
         return Double.parseDouble(getValueFromPreviousDayData("CLOSE"));
@@ -165,7 +164,7 @@ public enum MoexCurrencyPair implements CurrencyPair {
      * валютной пары.
      */
     private Map<String, String> getLastTradingDayDataFromMoex() {
-        String marketDataJsonResponse = Utilities.readResponse(HttpRequestSender.newLastTradingDayDataRequest(this));
+        String marketDataJsonResponse = HttpRequestFactory.newMoexLastTradingDayDataRequest(this);
         return JsonReader.parseLastTradingDayDataToMap(marketDataJsonResponse);
     }
 
@@ -182,8 +181,7 @@ public enum MoexCurrencyPair implements CurrencyPair {
         LocalDate tillDate = nowInMoscow.minusDays(1).toLocalDate(); // вчерашний день
 
         // отправляем запрос, читаем ответ
-        String lastWeekDataJsonResponse =
-                Utilities.readResponse(HttpRequestSender.newPreviousDaysDataRequest(this, fromDate, tillDate));
+        String lastWeekDataJsonResponse = HttpRequestFactory.newMoexPreviousDaysDataRequest(this, fromDate, tillDate);
 
         // из данных за неделю получаем данные за предыдущую торговую сессию и парсим их в map
         return JsonReader.parsePreviousDayDataToMap(lastWeekDataJsonResponse);
