@@ -7,6 +7,8 @@ import lombok.Getter;
 
 import java.util.Map;
 
+import static com.mycompany.currency.Currency.*;
+
 /**
  * Криптовалютная пара, торгующаяся на бирже Bybit.
  */
@@ -14,14 +16,14 @@ import java.util.Map;
 @AllArgsConstructor
 public enum BybitCryptocurrencyPair implements CurrencyPair {
 
-    BTC_USDT("BTCUSDT", "BTC", "USDT"), // Bitcoin к USDT
-    ETH_USDT("ETHUSDT", "ETH", "USDT"), // Etherium к USDT
-    SOL_USDT("SOLUSDT", "SOL", "USDT"), // Solana к USDT
-    WLKN_USDT("WLKNUSDT", "WLKN", "USDT"); // Walken к USDT
+    BTC_USDT("BTCUSDT", BTC, USDT), // Bitcoin к USDT
+    ETH_USDT("ETHUSDT", ETH, USDT), // Etherium к USDT
+    SOL_USDT("SOLUSDT", SOL, USDT), // Solana к USDT
+    WLKN_USDT("WLKNUSDT", WLKN, USDT); // Walken к USDT
 
     private final String ticker; // тикер данной валютной пары на бирже Bybit
-    private final String firstCurrencyCode; // код базовой (первой из двух) валюты
-    private final String secondCurrencyCode; // код второй валюты
+    private final Currency firstCurrency; // код базовой (первой из двух) валюты
+    private final Currency secondCurrency; // код второй валюты
 
     /**
      * Возвращает котировку данной криптовалютной пары.
@@ -29,6 +31,16 @@ public enum BybitCryptocurrencyPair implements CurrencyPair {
     @Override
     public double getQuote() {
         return getLastMarketPrice();
+    }
+
+    @Override
+    public String getShortName() {
+        return this.name();
+    }
+
+    @Override
+    public boolean isCrypto() {
+        return true;
     }
 
     /**

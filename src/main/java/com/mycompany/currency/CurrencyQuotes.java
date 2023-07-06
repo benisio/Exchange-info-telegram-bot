@@ -19,7 +19,7 @@ import static com.mycompany.currency.CalculatedQuoteCurrencyPair.*;
 public class CurrencyQuotes {
 
     // заводим отдельные мапы для крипты и фиатных валют, так как будем отправлять их котировки в разных сообщениях
-    private Map<CurrencyPair, Double> currencyQuotes = new LinkedHashMap<>();
+    private Map<CurrencyPair, Double> fiatCurrencyQuotes = new LinkedHashMap<>();
     private Map<CurrencyPair, Double> cryptoCurrencyQuotes = new LinkedHashMap<>();
 
     // Флаг актуальности котировки.
@@ -34,13 +34,13 @@ public class CurrencyQuotes {
         if (!quotesRelevant) { // если котировки неактуальны, получаем актуальные и кладем в mapы
 
             // фиатные валюты
-            currencyQuotes.put(USD_RUB,   USD_RUB.getQuote());
-            currencyQuotes.put(EUR_RUB,   EUR_RUB.getQuote());
-            currencyQuotes.put(CNY_RUB,   CNY_RUB.getQuote());
-            currencyQuotes.put(TRY_RUB,   TRY_RUB.getQuote());
-            currencyQuotes.put(EUR_USD,   EUR_USD.getQuote());
-            currencyQuotes.put(USD_KZT,   USD_KZT.getQuote());
-            currencyQuotes.put(RUB_KZT,   RUB_KZT.getQuote());
+            fiatCurrencyQuotes.put(USD_RUB,   USD_RUB.getQuote());
+            fiatCurrencyQuotes.put(EUR_RUB,   EUR_RUB.getQuote());
+            fiatCurrencyQuotes.put(CNY_RUB,   CNY_RUB.getQuote());
+            fiatCurrencyQuotes.put(TRY_RUB,   TRY_RUB.getQuote());
+            fiatCurrencyQuotes.put(EUR_USD,   EUR_USD.getQuote());
+            fiatCurrencyQuotes.put(USD_KZT,   USD_KZT.getQuote());
+            fiatCurrencyQuotes.put(RUB_KZT,   RUB_KZT.getQuote());
 
             // крипта
             cryptoCurrencyQuotes.put(BTC_USDT,  BTC_USDT.getQuote());
@@ -63,7 +63,7 @@ public class CurrencyQuotes {
 
         // формируем текст сообщения для отправки пользователям
         String messageHeader = "Курсы валют на " + quotesUpdateTime + " по мск:\n";
-        String messageBody = buildMessageBody(currencyQuotes);
+        String messageBody = buildMessageBody(fiatCurrencyQuotes);
         return messageHeader + messageBody;
     }
 
@@ -79,9 +79,9 @@ public class CurrencyQuotes {
     private String buildMessageBody(Map<CurrencyPair, Double> quotes) {
         StringBuilder messageBuilder = new StringBuilder();
         quotes.forEach((currencyPair, quote) -> {
-            String firstCurrency = currencyPair.getFirstCurrencyCode();
+            String firstCurrency = currencyPair.getFirstCurrency().getCode();
             String quoteStr = Utilities.formatDouble(quote);
-            String secondCurrency = currencyPair.getSecondCurrencyCode();
+            String secondCurrency = currencyPair.getSecondCurrency().getCode();
 
             // метод String.format() заполняет шаблон строки (первый аргумент) строковыми вставками (последующие аргументы)
             String currencyPairMessage = String.format("\n1 %s = %s %s", firstCurrency, quoteStr, secondCurrency);

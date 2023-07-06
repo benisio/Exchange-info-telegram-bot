@@ -12,27 +12,30 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.mycompany.currency.Currency.*;
+
 /**
  * Валютная пара, торгующаяся на Московской бирже (Мосбиржа, MOEX).
  */
 public enum MoexCurrencyPair implements CurrencyPair {
 
     // валютные пары с рублем
-    USD_RUB("USD000UTSTOM", "$", "RUB", 1), // доллар США к рублю
-    EUR_RUB("EUR_RUB__TOM", "€", "RUB", 1), // евро к рублю
-    CNY_RUB("CNYRUB_TOM", "CNY", "RUB", 1), // китайский юань к рублю
+    USD_RUB("USD000UTSTOM", USD, RUB, 1), // доллар США к рублю
+    EUR_RUB("EUR_RUB__TOM", EUR, RUB, 1), // евро к рублю
+    CNY_RUB("CNYRUB_TOM", CNY, RUB, 1), // китайский юань к рублю
     // котировку KZT_RUB не будем рассылать пользователям, но она нужна для расчета котировки RUB/KZT, см. класс CalculatedQuoteCurrencyPair
-    KZT_RUB("KZTRUB_TOM", "KZT", "RUB", 100), // казахстанский тенге к рублю
-    TRY_RUB("TRYRUB_TOM", "TRY", "RUB", 1), // турецкая лира к рублю
+    KZT_RUB("KZTRUB_TOM", KZT, RUB, 100), // казахстанский тенге к рублю
+    TRY_RUB("TRYRUB_TOM", TRY, RUB, 1), // турецкая лира к рублю
 
     // валютные пары с долларом
-    EUR_USD("EURUSD000TOM", "€", "$", 1), // евро к доллару США
-    USD_KZT("USDKZT_TOM", "$", "KZT", 1); // доллар США к казахстанскому тенге
+    EUR_USD("EURUSD000TOM", EUR, USD, 1), // евро к доллару США
+    USD_KZT("USDKZT_TOM", USD, KZT, 1); // доллар США к казахстанскому тенге
 
 
     @Getter private final String ticker; // тикер данной валютной пары на Мосбирже
-    @Getter private final String firstCurrencyCode; // код базовой (первой из двух) валюты
-    @Getter private final String secondCurrencyCode; // код второй валюты
+    @Getter private final Currency firstCurrency; // код базовой (первой из двух) валюты
+    @Getter private final Currency secondCurrency; // код второй валюты
+
 
     // Количество валюты, за которое указывается курс в котировках.
     // Например, если для пары KZT/RUB значение FACEVALUE = 100, а LAST = 19, то это означает, что 100 KZT = 19 RUB.
@@ -51,15 +54,20 @@ public enum MoexCurrencyPair implements CurrencyPair {
      * Конструктор
      *
      * @param ticker             тикер валютной пары
-     * @param firstCurrencyCode  код базовой (первой) валюты
-     * @param secondCurrencyCode код второй валюты
+     * @param firstCurrency   базовой (первой) валюты
+     * @param secondCurrency  второй валюты
      * @param faceValue          количество валюты лота, за которое указывается курс в котировках
      */
-    private MoexCurrencyPair(String ticker, String firstCurrencyCode, String secondCurrencyCode, int faceValue) {
+    private MoexCurrencyPair(String ticker, Currency firstCurrency, Currency secondCurrency, int faceValue) {
         this.ticker = ticker;
-        this.firstCurrencyCode = firstCurrencyCode;
-        this.secondCurrencyCode = secondCurrencyCode;
+        this.firstCurrency = firstCurrency;
+        this.secondCurrency = secondCurrency;
         this.faceValue = faceValue;
+    }
+
+    @Override
+    public boolean isFiat() {
+        return true;
     }
 
     /**
@@ -79,6 +87,11 @@ public enum MoexCurrencyPair implements CurrencyPair {
             quote = closePrice/faceValue;
         }
         return quote;
+    }
+
+    @Override
+    public String getShortName() {
+        return firstCurrency.getShortName() + "/" + secondCurrency.getShortName();
     }
 
     // загружает в мапы данные Мосбиржи о текущей/последней и о предыдущей торговой сессии
