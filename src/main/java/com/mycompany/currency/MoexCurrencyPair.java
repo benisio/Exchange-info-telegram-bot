@@ -26,6 +26,7 @@ public enum MoexCurrencyPair implements CurrencyPair {
     // котировку KZT_RUB не будем рассылать пользователям, но она нужна для расчета котировки RUB/KZT, см. класс CalculatedQuoteCurrencyPair
     KZT_RUB("KZTRUB_TOM", KZT, RUB, 100), // казахстанский тенге к рублю
     TRY_RUB("TRYRUB_TOM", TRY, RUB, 1), // турецкая лира к рублю
+    BYN_RUB("BYNRUB_TOM", BYN, RUB, 1), // белорусский рубль к рублю
 
     // валютные пары с долларом
     EUR_USD("EURUSD000TOM", EUR, USD, 1), // евро к доллару США

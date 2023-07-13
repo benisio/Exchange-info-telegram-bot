@@ -13,8 +13,7 @@ import java.io.InputStream;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +25,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     // читаем properties-файл с конфигурационными параметрами бота
     static Properties botProperties;
-    static {
+    static { // вроде как в спринге ресурсы подтягиваются автоматически из этого файла
         // try (InputStream resourceStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties")) {
         try (InputStream resourceStream = TelegramBot.class.getClassLoader().getResourceAsStream("application.properties")) {
             botProperties = new Properties();
@@ -59,22 +58,22 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         // Проверяем, содержит ли update сообщение и содержится ли в сообщении текст
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String text = update.getMessage().getText(); // получаем текст сообщения
-            long userChatId = update.getMessage().getChatId();
+            String messageText = update.getMessage().getText(); // получаем текст сообщения
+            long chatId = update.getMessage().getChatId();
 
             // обработка нажатий пунктов меню
-            switch (text) {
+            switch (messageText) {
                 case "/start" -> {
-                    addUser(userChatId);
+                    addUser(chatId);
 
                     // отправляем сообщения с котировками фиатных валют и крипты пользователю
                     quotes.getRelevantQuotes();
-                    send(userChatId, quotes.getFiatCurrenciesQuotesMessage());
-                    send(userChatId, quotes.getCryptocurrenciesQuotesMessage());
+                    sendMessage(chatId, quotes.getFiatCurrenciesQuotesMessage());
+                    sendMessage(chatId, quotes.getCryptocurrenciesQuotesMessage());
                 }
                 case "/exit" -> {
-                    send(userChatId, "Бот остановлен !");
-                    deleteUser(userChatId);
+                    sendMessage(chatId, "Бот остановлен !");
+                    deleteUser(chatId);
                 }
             }
         }
@@ -136,7 +135,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         SendMessage sendMessage = new SendMessage();
         try {
             for (long chatId : userChatIds) {
-                sendMessage.setChatId(chatId);
+                sendMessage.setChatId(chatId); // почему я здесь не юзаю метод send() ????
                 sendMessage.setText(text);
                 execute(sendMessage); // отправляем сообщение
             }
@@ -149,12 +148,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     /**
      * Отправляет сообщение одному пользователю.
      *
-     * @param userChatId id чата юзера, которому будет отправлено сообщение
+     * @param chatId id чата юзера, которому будет отправлено сообщение
      * @param text текст сообщения
      */
-    private void send(long userChatId, String text) {
+    private void sendMessage(long chatId, String text) {
         try {
-            execute(new SendMessage("" + userChatId, text));
+            execute(new SendMessage("" + chatId, text));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

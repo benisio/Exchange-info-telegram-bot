@@ -22,7 +22,8 @@ import static com.mycompany.currency.MoexCurrencyPair.*;
 @AllArgsConstructor
 public enum CalculatedQuoteCurrencyPair implements CurrencyPair {
 
-    RUB_KZT(1 / KZT_RUB.getQuote(), RUB, KZT); // рубль к казахстанскому тенге
+    RUB_KZT(1 / KZT_RUB.getQuote(), RUB, KZT), // рубль к казахстанскому тенге
+    USD_BYN(USD_RUB.getQuote() / BYN_RUB.getQuote(), USD, BYN); // доллар США к белорусскому рублю
 
     private final double quote; // рассчитанная котировка данной валютной пары
     private final Currency firstCurrency; // код базовой (первой) валюты

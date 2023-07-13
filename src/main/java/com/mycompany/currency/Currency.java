@@ -15,6 +15,7 @@ public enum Currency {
     KZT("KZT", "тенге", FIAT),
     CNY("CNY", "юань", FIAT),
     TRY("TRY", "лира", FIAT),
+    BYN("BYN", "рубль РБ", FIAT),
 
     BTC("BTC", "Bitcoin", CRYPTO),
     ETH("ETH", "Etherium", CRYPTO),
