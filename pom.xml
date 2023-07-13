@@ -35,6 +35,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- fixing jakarta.validation.NoProviderFoundException -->
+        <!-- https://stackoverflow.com/questions/36329001/unable-to-create-a-configuration-because-no-bean-validation-provider-could-be-f  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <!-- GSON -->
         <dependency>
@@ -89,6 +96,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                    <jvmArguments>-Dfile.encoding=UTF8</jvmArguments>
+                </configuration>
                 <version>${project.parent.version}</version>
             </plugin>
         </plugins>
