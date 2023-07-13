@@ -2,7 +2,6 @@ package com.mycompany;
 
 import com.mycompany.currency.CurrencyQuotes;
 import com.mycompany.config.TelegramBotConfig;
-import com.mycompany.currency.*;
 import com.mycompany.my.MyTimer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
