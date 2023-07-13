@@ -1,15 +1,14 @@
 package com.mycompany;
 
 import com.mycompany.currency.CurrencyQuotes;
+import com.mycompany.config.TelegramBotConfig;
+import com.mycompany.currency.*;
 import com.mycompany.my.MyTimer;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -20,20 +19,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * Класс, описывающий Telegram-бота.
  */
-@Component
+/*@Component*/
 public class TelegramBot extends TelegramLongPollingBot {
 
-    // читаем properties-файл с конфигурационными параметрами бота
-    static Properties botProperties;
-    static { // вроде как в спринге ресурсы подтягиваются автоматически из этого файла
-        // try (InputStream resourceStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties")) {
-        try (InputStream resourceStream = TelegramBot.class.getClassLoader().getResourceAsStream("application.properties")) {
-            botProperties = new Properties();
-            botProperties.load(resourceStream);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private final TelegramBotConfig botConfig;
 
     // котировки валютных пар
     private CurrencyQuotes quotes = new CurrencyQuotes();
@@ -41,16 +30,20 @@ public class TelegramBot extends TelegramLongPollingBot {
     // Коллекция для хранения множества chatId пользователей бота
     private Set<Long> userChatIds = ConcurrentHashMap.newKeySet(); // так мы получаем потокобезопасный HashSet
 
+    public TelegramBot(TelegramBotConfig botConfig) {
+        this.botConfig = botConfig;
+    }
+
     // возвращает username бота
     @Override
     public String getBotUsername() {
-        return botProperties.getProperty("bot.username"); // этот параметр можно получить у телеграм-бота @BotFather https://t.me/BotFather
+        return botConfig.getBotUsername(); // этот параметр можно получить у телеграм-бота @BotFather https://t.me/BotFather
     }
 
     // возвращает токен бота
     @Override
     public String getBotToken() {
-        return botProperties.getProperty("bot.token"); // этот параметр можно получить у телеграм-бота @BotFather https://t.me/BotFather
+        return botConfig.getBotToken(); // этот параметр можно получить у телеграм-бота @BotFather https://t.me/BotFather
     }
 
     // вызывается автоматически всякий раз при получении сообщения (update) от юзера
@@ -98,7 +91,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param startTimeStr - время и часовой пояс первого запуска задачи (task) в виде текста в формате "11:00:00 Europe/Moscow"
      * @param period - период повтора задачи (task)
      * @param unit - единица измерения времени для period
-     * */
+     */
     public void sendExchangeInfoToAllUsersAt(String startTimeStr, long period, TimeUnit unit) {
         String[] timeData = startTimeStr.split(" "); // timeData[0] - время, timeData[1] - часовой пояс
         var parsedTime = LocalTime.parse(timeData[0]);
@@ -139,7 +132,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                 sendMessage.setText(text);
                 execute(sendMessage); // отправляем сообщение
             }
-
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
