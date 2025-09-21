@@ -12,10 +12,10 @@ import java.util.concurrent.TimeUnit;
  * Entrance point of the application.
  * */
 @SpringBootApplication
-public class Application {
+public class ExchangeInfoTelegramBotApp {
 
     public static void main(String[] args) {
-        var ctx = SpringApplication.run(Application.class, args);
+        var ctx = SpringApplication.run(ExchangeInfoTelegramBotApp.class, args);
 
         // создаем и регистрируем бота
         TelegramBot bot = ctx.getBean(TelegramBot.class);
