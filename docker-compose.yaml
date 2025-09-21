@@ -1,0 +1,17 @@
+# docker compose -p exchange-info-bot up -d
+
+services:
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: exchange-info-bot-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "10008:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
