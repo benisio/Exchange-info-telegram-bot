@@ -29,6 +29,7 @@ public class HttpRequestFactory {
      * валютной пары за текущую или последнюю (если текущая уже закончилась) торговую сессию. Пример ответа на такой
      * запрос приведен в файле: src/example/moex_usd_rub_marketdata.json.
      * @param currencyPair - валютная пара, для которой отправляем запрос
+     * @return что возвращает ????????????????? String с json-файлом ответа API биржи на запрос
      */
     public static String newMoexLastTradingDayDataRequest(MoexCurrencyPair currencyPair) {
         return newGetRequest(currencyPair, null, null);
@@ -41,6 +42,7 @@ public class HttpRequestFactory {
      * @param currencyPair - валютная пара, для которой отправляем запрос
      * @param fromDate - начальная дата диапазона дат, за который хотим получить данные о торгах
      * @param tillDate - конечная дата диапазона дат, за который хотим получить данные о торгах (что если сюда передать сегодняшнюю дату ???)
+     * @return что возвращает ????????????????? String с json-файлом ответа API биржи на запрос
      */
     public static String newMoexPreviousDaysDataRequest(MoexCurrencyPair currencyPair, LocalDate fromDate, LocalDate tillDate) {
         return newGetRequest(currencyPair, fromDate, tillDate);
@@ -50,6 +52,7 @@ public class HttpRequestFactory {
      * валютной пары за текущую торговую сессию. Пример ответа на такой запрос приведен в файле:
      * src/example/bybit_wlkn_usdt_marketdata.json.
      * @param currencyPair - криптовалютная пара на бирже Bybit
+     * @return что возвращает ????????????????? String с json-файлом ответа API биржи на запрос
      */
     public static String newBybitMarketDataRequest(BybitCryptocurrencyPair currencyPair) {
         return newGetRequest(currencyPair, null, null);

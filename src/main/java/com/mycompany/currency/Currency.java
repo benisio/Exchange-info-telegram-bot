@@ -5,6 +5,9 @@ import lombok.Getter;
 
 import static com.mycompany.currency.Currency.CurrencyType.*;
 
+/**
+ * Валюта
+ */
 @Getter
 @AllArgsConstructor
 public enum Currency {
@@ -23,12 +26,14 @@ public enum Currency {
     LINEA("LINEA", "Linea", CRYPTO),
     USDT("USDT", "USD Tether", CRYPTO);
 
-    private final String code; // нужно ли это поле ? почти все валюты
-    private final String shortName;
-    private final CurrencyType type;
+    //нужно ли это поле ? почти все валюты
+    private final String code; // буквенное или символьное обозначение валюты
+    private final String shortName; // краткое название
+    private final CurrencyType type; // тип валюты
 
+    // тип валюты
     public enum CurrencyType {
-        FIAT,
-        CRYPTO;
+        FIAT, // фиатная валюта
+        CRYPTO // криптовалюта
     }
 }

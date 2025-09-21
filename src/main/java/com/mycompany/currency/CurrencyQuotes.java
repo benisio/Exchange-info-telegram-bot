@@ -58,7 +58,7 @@ public class CurrencyQuotes {
     private volatile boolean quotesRelevant;
 
     // получает актуальные котировки для каждой валютной пары
-    public void getRelevantQuotes() {
+    public void getRelevantQuotes() { // метод называется get..., но возвращает void. Обычно геттеры возвращают значение. Корректный ли здесь нейминг ?
         if (!quotesRelevant) { // если котировки неактуальны, получаем актуальные и кладем в mapы
             fiatCurrencyQuotes = getQuotes(FIAT_CURRENCY_PAIRS); // фиатные валюты
             cryptoCurrencyQuotes = getQuotes(Utilities.CRYPTO_CURRENCY_PAIRS); // крипта
