@@ -1,0 +1,29 @@
+bot:
+  username: TheExchangeInfoBot
+  token: 6126015745:AAGNig_TMslHTAxx68xb_1nfdIMPDhUYwj8
+
+server:
+  port: 4001
+
+spring:
+
+  datasource:
+    url: jdbc:postgresql://localhost:10008/exchange-info-bot-db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    generate-ddl: true
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        id:
+          new_generator_mappings: true
+        temp:
+          use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
