@@ -66,11 +66,6 @@ public enum MoexCurrencyPair implements CurrencyPair {
         this.faceValue = faceValue;
     }
 
-    @Override
-    public boolean isFiat() {
-        return true;
-    }
-
     /**
      * Возвращает котировку данной валютной пары в пересчете на 1 ед. базовой (первой из двух) валюты.
      * Для получения такой котировки все получаемые на Мосбирже котировки делим на faceValue.

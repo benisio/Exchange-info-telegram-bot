@@ -1,5 +1,6 @@
 package com.mycompany.currency;
 
+import static com.mycompany.currency.Currency.CurrencyType.*;
 /**
  * Валютная пара
  */
@@ -33,19 +34,22 @@ public interface CurrencyPair extends EnumInterface {
     String getShortName();
 
     /**
-     *
+     * Возвращает true, если данная валютная пара является парой фиатных валют, иначе false.
+     */
+    default boolean isFiat() {
+        return getFirstCurrency().getType() == FIAT && getSecondCurrency().getType() == FIAT;
+    }
+
+    /**
+     * Возвращает true, если данная валютная пара является криптовалютной парой, иначе false.
      */
     default boolean isCrypto() {
-        return false;
+        return getFirstCurrency().getType() == CRYPTO && getSecondCurrency().getType() == CRYPTO;
     }
 
     /**
      *
      */
-    default boolean isFiat() {
-        return false;
-    }
-
     static CurrencyPair valueOf(String name) {
         try {
             return MoexCurrencyPair.valueOf(name);

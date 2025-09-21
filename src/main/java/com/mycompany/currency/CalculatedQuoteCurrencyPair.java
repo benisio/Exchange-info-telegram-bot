@@ -33,9 +33,4 @@ public enum CalculatedQuoteCurrencyPair implements CurrencyPair {
     public String getShortName() {
         return firstCurrency.getShortName() + "/" + secondCurrency.getShortName();
     }
-
-    @Override
-    public boolean isFiat() {
-        return true;
-    }
 }

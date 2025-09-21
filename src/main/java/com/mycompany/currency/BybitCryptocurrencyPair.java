@@ -38,11 +38,6 @@ public enum BybitCryptocurrencyPair implements CurrencyPair {
         return this.name();
     }
 
-    @Override
-    public boolean isCrypto() {
-        return true;
-    }
-
     /**
      * Возвращает цену последней сделки (котировка "lastPrice" из json-ответа биржи Bybit) за текущую торговую сессию
      * по данной валютной паре. Пример такого json-ответа приведен в файле:
