@@ -1,6 +1,8 @@
 package com.mycompany.service;
 
-import com.mycompany.model.User;
+import com.mycompany.entity.User;
+
+import java.util.Optional;
 
 public interface UserService {
 
@@ -8,10 +10,7 @@ public interface UserService {
     void add(User user);
 
     // read
-    User getByChatId(long chatId);
-
-    // update
-    void update(User user);
+    Optional<User> getByChatId(long chatId);
 
     // delete
     void delete(User user);

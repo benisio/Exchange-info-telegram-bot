@@ -35,6 +35,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
         <!-- fixing jakarta.validation.NoProviderFoundException -->
         <!-- https://stackoverflow.com/questions/36329001/unable-to-create-a-configuration-because-no-bean-validation-provider-could-be-f  -->
         <dependency>
@@ -48,15 +53,6 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
-        </dependency>
-
-        <!-- Hibernate Core (а также вместе с ней подтянется jakarta.persistence-api) -->
-        <!-- с прописанным здесь тегом <type>pom</type> не подгружаются классы Session и SessionFactory -->
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
-        <dependency>
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>6.1.7.Final</version>
         </dependency>
 
         <!-- PostgreSQL -->

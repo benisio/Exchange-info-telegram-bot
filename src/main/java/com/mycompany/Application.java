@@ -1,12 +1,11 @@
 package com.mycompany;
 
-import com.mycompany.config.HibernateSessionFactoryUtil;
-import com.mycompany.config.TelegramBotConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,12 +15,10 @@ import java.util.concurrent.TimeUnit;
 public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-
-        HibernateSessionFactoryUtil.init();
+        var ctx = SpringApplication.run(Application.class, args);
 
         // создаем и регистрируем бота
-        TelegramBot bot = new TelegramBot(new TelegramBotConfig());
+        TelegramBot bot = ctx.getBean(TelegramBot.class);
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(bot);

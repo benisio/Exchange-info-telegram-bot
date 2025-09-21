@@ -1,11 +1,12 @@
 package com.mycompany;
 
 import com.mycompany.currency.*;
-import com.mycompany.model.User;
+import com.mycompany.entity.User;
 import com.mycompany.currency.CurrencyQuotes;
 import com.mycompany.my.MyTimer;
 import com.mycompany.service.UserService;
 import com.mycompany.service.UserServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -37,15 +38,18 @@ import static com.mycompany.currency.MoexCurrencyPair.*;
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
-  private String username;
-  private String token;
+  private final String username;
+  private final String token;
+  private final UserService userService;
 
   @Autowired
   public TelegramBot(
       @Value("${bot.username}") String username,
-      @Value("${bot.token}") String token) {
+      @Value("${bot.token}") String token,
+      UserService userService) {
     this.username = username;
     this.token = token;
+    this.userService = userService;
   }
 
   @Override
@@ -58,7 +62,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     return token; // этот параметр можно получить у телеграм-бота @BotFather https://t.me/BotFather
   }
 
-  private UserService userService = new UserServiceImpl();
 
   // котировки валютных пар
   private CurrencyQuotes quotes = new CurrencyQuotes();

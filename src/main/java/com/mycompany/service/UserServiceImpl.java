@@ -1,30 +1,30 @@
 package com.mycompany.service;
 
-import com.mycompany.dao.UserDao;
-import com.mycompany.dao.UserDaoImpl;
-import com.mycompany.model.User;
+import com.mycompany.entity.User;
+import com.mycompany.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserDao userDao = new UserDaoImpl();
+    private final UserRepository repository;
 
     @Override
     public void add(User user) {
-        userDao.add(user);
+        repository.save(user);
     }
 
     @Override
-    public User getByChatId(long chatId) {
-        return userDao.getByChatId(chatId);
-    }
-
-    @Override
-    public void update(User user) {
-        userDao.edit(user);
+    public Optional<User> getByChatId(long chatId) {
+        return repository.findById(chatId);
     }
 
     @Override
     public void delete(User user) {
-        userDao.delete(user);
+        repository.delete(user);
     }
 }
