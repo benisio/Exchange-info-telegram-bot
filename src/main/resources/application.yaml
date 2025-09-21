@@ -3,17 +3,20 @@ bot:
   token: 6126015745:AAGNig_TMslHTAxx68xb_1nfdIMPDhUYwj8
 
 server:
-  port: 4001
+  port: 8080
 
 spring:
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
 
   datasource:
     url: jdbc:postgresql://localhost:10008/exchange-info-bot-db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create

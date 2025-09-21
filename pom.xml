@@ -60,7 +60,13 @@
             <version>${gson.version}</version>
         </dependency>
 
-        <!-- PostgreSQL -->
+      <!-- Liquibase -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
+
+      <!-- PostgreSQL -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
