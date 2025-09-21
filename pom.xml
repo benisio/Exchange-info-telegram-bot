@@ -19,6 +19,11 @@
 
     <properties>
         <java.version>17</java.version>
+        <gson.version>2.10.1</gson.version>
+        <postgres.version>42.7.7</postgres.version>
+        <telegram.api.version>6.9.0</telegram.api.version>
+        <lombok.version>1.18.42</lombok.version>
+        <httpclient.version>4.5.13</httpclient.version>
     </properties>
 
     <dependencies>
@@ -52,21 +57,21 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.10.1</version>
+            <version>${gson.version}</version>
         </dependency>
 
         <!-- PostgreSQL -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.7</version>
+            <version>${postgres.version}</version>
         </dependency>
 
         <!-- Telegram Bot API -->
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
-            <version>6.9.0</version>
+            <version>${telegram.api.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
@@ -74,7 +79,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.42</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -82,7 +87,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
+            <version>${httpclient.version}</version>
         </dependency>
 
     </dependencies>
