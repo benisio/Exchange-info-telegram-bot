@@ -21,13 +21,13 @@ public class TestApplication {
         SpringApplication.run(Application.class, args);
 
         // создаем и регистрируем бота
-        TelegramBot bot = new TelegramBot(new TestBotConfig()); // передавать сюда параметром BotConfig, чтобы можно было разделить в коде тестового бота и боевого
+        /*TelegramBot bot = new TelegramBot(new TestBotConfig()); // передавать сюда параметром BotConfig, чтобы можно было разделить в коде тестового бота и боевого
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(bot);
         } catch (TelegramApiException e) {
             e.printStackTrace();
-        }
+        }*/
 
         // должен ли этот кусок кода быть здесь ?
         // если у нас нет юзеров, кому мы будем отправлять сообщения ?
@@ -38,6 +38,6 @@ public class TestApplication {
         var pattern = DateTimeFormatter.ofPattern("HH:mm:ss VV");
         var almostNow = ZonedDateTime.now().plusMinutes(1).format(pattern);
         System.out.println(almostNow);
-        bot.sendExchangeInfoToAllUsersAt(almostNow, 1, TimeUnit.HOURS);
+        //bot.sendExchangeInfoToAllUsersAt(almostNow, 1, TimeUnit.HOURS);
     }
 }
