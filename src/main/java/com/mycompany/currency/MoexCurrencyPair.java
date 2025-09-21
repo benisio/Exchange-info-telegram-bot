@@ -67,7 +67,7 @@ public enum MoexCurrencyPair implements CurrencyPair {
     }
 
     /**
-     * Возвращает котировку данной валютной пары в пересчете на 1 ед. базовой (первой из двух) валюты.
+     * Возвращает котировку данной валютной пары в пересчете на 1 ед базовой (первой из двух) валюты.
      * Для получения такой котировки все получаемые на Мосбирже котировки делим на faceValue.
      */
     @Override
@@ -91,7 +91,7 @@ public enum MoexCurrencyPair implements CurrencyPair {
     }
 
     // загружает в мапы данные Мосбиржи о текущей/последней и о предыдущей торговой сессии
-    private void getMarketDataFromMoex() {
+    private void getMarketDataFromMoex() { // подумать над неймингом метода - называется "get...", но ничего не возвращает
         lastTradingDayData = getLastTradingDayDataFromMoex();
         previousDayData = getPreviousDayDataFromMoex();
     }
@@ -130,6 +130,8 @@ public enum MoexCurrencyPair implements CurrencyPair {
      * @return Optional, содержащий одно из двух: цену последней сделки или null
      */
     private Optional<Double> getLastMarketPrice() {
+        // 1. мб переименовать optLastMarketPrice в lastMarketPriceOpt ?
+        // 2. мб вместо метода getValueFromLastTradingDayData("LAST") использовать просто lastTradingDayData.get("LAST"); Мб так более читабельно будет?
         Optional<String> optLastMarketPrice = Optional.ofNullable(getValueFromLastTradingDayData("LAST"));
         if (optLastMarketPrice.isPresent()) {
             double lastMarketPrice = Double.parseDouble(optLastMarketPrice.get());
