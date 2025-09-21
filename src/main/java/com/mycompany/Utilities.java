@@ -16,7 +16,7 @@ public final class Utilities {
             BTC_USDT,
             ETH_USDT,
             SOL_USDT,
-            WLKN_USDT
+            LINEA_USDT
     );
 
     /**

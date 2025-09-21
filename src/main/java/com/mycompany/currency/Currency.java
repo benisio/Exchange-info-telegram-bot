@@ -20,7 +20,7 @@ public enum Currency {
     BTC("BTC", "Bitcoin", CRYPTO),
     ETH("ETH", "Etherium", CRYPTO),
     SOL("SOL", "Solana", CRYPTO),
-    WLKN("WLKN", "Walken", CRYPTO),
+    LINEA("LINEA", "Linea", CRYPTO),
     USDT("USDT", "USD Tether", CRYPTO);
 
     private final String code; // нужно ли это поле ? почти все валюты

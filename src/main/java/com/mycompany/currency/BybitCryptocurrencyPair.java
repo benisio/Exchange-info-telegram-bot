@@ -19,7 +19,7 @@ public enum BybitCryptocurrencyPair implements CurrencyPair {
     BTC_USDT("BTCUSDT", BTC, USDT), // Bitcoin к USDT
     ETH_USDT("ETHUSDT", ETH, USDT), // Etherium к USDT
     SOL_USDT("SOLUSDT", SOL, USDT), // Solana к USDT
-    WLKN_USDT("WLKNUSDT", WLKN, USDT); // Walken к USDT
+    LINEA_USDT("LINEAUSDT", LINEA, USDT); // Linea к USDT
 
     private final String ticker; // тикер данной валютной пары на бирже Bybit
     private final Currency firstCurrency; // код базовой (первой из двух) валюты

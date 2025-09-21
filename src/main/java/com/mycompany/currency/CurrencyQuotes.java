@@ -32,7 +32,7 @@ public class CurrencyQuotes {
             BTC_USDT,
             ETH_USDT,
             SOL_USDT,
-            WLKN_USDT
+            LINEA_USDT
     );
 
     public static final List<CurrencyPair> FIAT_CURRENCY_PAIRS = List.of(
