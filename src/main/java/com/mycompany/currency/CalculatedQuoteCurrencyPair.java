@@ -2,6 +2,8 @@ package com.mycompany.currency;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import static com.mycompany.currency.Currency.*;
 import static com.mycompany.currency.MoexCurrencyPair.*;
 
 /**
@@ -20,18 +22,15 @@ import static com.mycompany.currency.MoexCurrencyPair.*;
 @AllArgsConstructor
 public enum CalculatedQuoteCurrencyPair implements CurrencyPair {
 
-    RUB_KZT(1 / KZT_RUB.getQuote() ,"RUB","KZT"); // рубль к казахстанскому тенге
+    RUB_KZT(1 / KZT_RUB.getQuote(), RUB, KZT), // рубль к казахстанскому тенге
+    USD_BYN(USD_RUB.getQuote() / BYN_RUB.getQuote(), USD, BYN); // доллар США к белорусскому рублю
 
     private final double quote; // рассчитанная котировка данной валютной пары
-    private final String firstCurrencyCode; // код базовой (первой) валюты
-    private final String secondCurrencyCode; // код второй валюты
+    private final Currency firstCurrency; // код базовой (первой) валюты
+    private final Currency secondCurrency; // код второй валюты
 
-    /**
-     * Так как котировки данных валютных пар рассчитываются на основе котировок других валютных пар, а не берутся с
-     * биржи, то тикера у них нет.
-     */
     @Override
-    public String getTicker() {
-        return ""; // или throw new NoTickerException ???
+    public String getShortName() {
+        return firstCurrency.getShortName() + "/" + secondCurrency.getShortName();
     }
 }

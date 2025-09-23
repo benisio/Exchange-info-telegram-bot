@@ -1,15 +1,23 @@
 package com.mycompany;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
+import com.mycompany.currency.CurrencyPair;
+
 import java.text.DecimalFormat;
 import java.util.*;
+
+import static com.mycompany.currency.BybitCryptocurrencyPair.*;
 
 /**
  * Утилитный класс с утилитными методами.
  */
 public final class Utilities {
+
+    public static final List<CurrencyPair> CRYPTO_CURRENCY_PAIRS = List.of(
+            BTC_USDT,
+            ETH_USDT,
+            SOL_USDT,
+            LINEA_USDT
+    );
 
     /**
      * Запрещаем создавать экземпляры класса, так как он состоит только из статичных методов.

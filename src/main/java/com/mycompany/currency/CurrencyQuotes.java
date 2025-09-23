@@ -4,6 +4,7 @@ import com.mycompany.Utilities;
 import com.mycompany.my.MyTimer;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -18,9 +19,36 @@ import static com.mycompany.currency.CalculatedQuoteCurrencyPair.*;
  */
 public class CurrencyQuotes {
 
+    public static final List<CurrencyPair> ALL_CURRENCY_PAIRS = List.of(
+            USD_RUB,
+            EUR_RUB,
+            CNY_RUB,
+            TRY_RUB,
+            EUR_USD,
+            USD_KZT,
+            RUB_KZT, // эта валютная пара есть на KASE
+            USD_BYN,
+
+            BTC_USDT,
+            ETH_USDT,
+            SOL_USDT,
+            LINEA_USDT
+    );
+
+    public static final List<CurrencyPair> FIAT_CURRENCY_PAIRS = List.of(
+            USD_RUB,
+            EUR_RUB,
+            CNY_RUB,
+            TRY_RUB,
+            EUR_USD,
+            USD_KZT,
+            RUB_KZT,
+            USD_BYN
+    );
+
     // заводим отдельные мапы для крипты и фиатных валют, так как будем отправлять их котировки в разных сообщениях
-    private Map<CurrencyPair, Double> currencyQuotes = new LinkedHashMap<>();
-    private Map<CurrencyPair, Double> cryptoCurrencyQuotes = new LinkedHashMap<>();
+    private Map<CurrencyPair, Double> fiatCurrencyQuotes;
+    private Map<CurrencyPair, Double> cryptoCurrencyQuotes;
 
     // Флаг актуальности котировки.
     // Нужен для того, чтобы при обращении к боту одновременно 100 юзеров, бот не отправлял одновременно 100 запросов к
@@ -32,22 +60,8 @@ public class CurrencyQuotes {
     // получает актуальные котировки для каждой валютной пары
     public void getRelevantQuotes() {
         if (!quotesRelevant) { // если котировки неактуальны, получаем актуальные и кладем в mapы
-
-            // фиатные валюты
-            currencyQuotes.put(USD_RUB,   USD_RUB.getQuote());
-            currencyQuotes.put(EUR_RUB,   EUR_RUB.getQuote());
-            currencyQuotes.put(CNY_RUB,   CNY_RUB.getQuote());
-            currencyQuotes.put(TRY_RUB,   TRY_RUB.getQuote());
-            currencyQuotes.put(EUR_USD,   EUR_USD.getQuote());
-            currencyQuotes.put(USD_KZT,   USD_KZT.getQuote());
-            currencyQuotes.put(RUB_KZT,   RUB_KZT.getQuote());
-
-            // крипта
-            cryptoCurrencyQuotes.put(BTC_USDT,  BTC_USDT.getQuote());
-            cryptoCurrencyQuotes.put(ETH_USDT,  ETH_USDT.getQuote());
-            cryptoCurrencyQuotes.put(SOL_USDT,  SOL_USDT.getQuote());
-            cryptoCurrencyQuotes.put(WLKN_USDT, WLKN_USDT.getQuote());
-
+            fiatCurrencyQuotes = getQuotes(FIAT_CURRENCY_PAIRS); // фиатные валюты
+            cryptoCurrencyQuotes = getQuotes(Utilities.CRYPTO_CURRENCY_PAIRS); // крипта
             quotesRelevant = true; // устанавливаем флаг актуальности котировок
 
             // длительность актуальности котировок
@@ -63,7 +77,7 @@ public class CurrencyQuotes {
 
         // формируем текст сообщения для отправки пользователям
         String messageHeader = "Курсы валют на " + quotesUpdateTime + " по мск:\n";
-        String messageBody = buildMessageBody(currencyQuotes);
+        String messageBody = buildMessageBody(fiatCurrencyQuotes);
         return messageHeader + messageBody;
     }
 
@@ -79,9 +93,9 @@ public class CurrencyQuotes {
     private String buildMessageBody(Map<CurrencyPair, Double> quotes) {
         StringBuilder messageBuilder = new StringBuilder();
         quotes.forEach((currencyPair, quote) -> {
-            String firstCurrency = currencyPair.getFirstCurrencyCode();
+            String firstCurrency = currencyPair.getFirstCurrency().getCode();
             String quoteStr = Utilities.formatDouble(quote);
-            String secondCurrency = currencyPair.getSecondCurrencyCode();
+            String secondCurrency = currencyPair.getSecondCurrency().getCode();
 
             // метод String.format() заполняет шаблон строки (первый аргумент) строковыми вставками (последующие аргументы)
             String currencyPairMessage = String.format("\n1 %s = %s %s", firstCurrency, quoteStr, secondCurrency);
@@ -89,5 +103,14 @@ public class CurrencyQuotes {
         });
 
         return messageBuilder.toString();
+    }
+
+    private Map<CurrencyPair, Double> getQuotes(List<CurrencyPair> currencyPairs) {
+        Map<CurrencyPair, Double> quotes = new LinkedHashMap<>();
+        for (CurrencyPair pair : currencyPairs) {
+            quotes.put(pair, pair.getQuote());
+        }
+
+        return quotes;
     }
 }
