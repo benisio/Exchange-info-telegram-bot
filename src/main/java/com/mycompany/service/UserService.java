@@ -2,16 +2,17 @@ package com.mycompany.service;
 
 import com.mycompany.entity.User;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface UserService {
 
-    // create
-    void add(User user);
+  void save(User user);
 
-    // read
-    Optional<User> getByChatId(long chatId);
+  User getById(long chatId);
 
-    // delete
-    void delete(User user);
+  void delete(User user);
+
+  List<Long> getAllUserIds();
+
+  boolean exists(long id);
 }
