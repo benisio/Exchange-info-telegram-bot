@@ -1,6 +1,6 @@
 bot:
-  username: TheExchangeInfoBot
-  token: 6126015745:AAGNig_TMslHTAxx68xb_1nfdIMPDhUYwj8
+  username: ${BOT_USERNAME}
+  token: ${BOT_TOKEN}
 
 server:
   port: 8080
@@ -16,7 +16,7 @@ spring:
       ddl-auto: none
 
   datasource:
-    url: jdbc:postgresql://localhost:10008/exchange-info-bot-db
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
