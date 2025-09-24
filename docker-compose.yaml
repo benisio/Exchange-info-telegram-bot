@@ -2,6 +2,19 @@
 
 services:
 
+  telegram-bot:
+    build: .
+    image: my-bot:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/exchange-info-bot-db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      BOT_USERNAME: TheExchangeInfoBot
+      BOT_TOKEN: 6126015745:AAGNig_TMslHTAxx68xb_1nfdIMPDhUYwj8
+    depends_on:
+      - db
+    restart: unless-stopped
+
   db:
     image: postgres:17
     environment:
@@ -12,6 +25,7 @@ services:
       - "10008:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
 volumes:
   postgres_data:
