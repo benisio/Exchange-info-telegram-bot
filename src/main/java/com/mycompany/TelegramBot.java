@@ -108,10 +108,14 @@ public class TelegramBot extends TelegramLongPollingBot {
             userService.save(new User(chatId, firstName, lastName, userName));
           }
 
+          // загрузить настройки
+          var userDto = mapper.toDto(userService.getById(chatId));
+          Set<String> displayableCurrencies = userDto.getDisplayableCurrencies();
+
           // отправляем сообщения с котировками фиатных валют и крипты пользователю
-          quotes.getRelevantQuotes();
-          sendMessage(chatId, quotes.getFiatCurrenciesQuotesMessage());
-          sendMessage(chatId, quotes.getCryptocurrenciesQuotesMessage());
+          quotes.getRelevantQuotes(); // выполнять в другом потоке и кешировать в редис ?
+          sendMessage(chatId, quotes.getFiatCurrenciesQuotesMessage(displayableCurrencies));
+          sendMessage(chatId, quotes.getCryptocurrenciesQuotesMessage(displayableCurrencies));
         }
 
         case "/settings" -> {
@@ -203,6 +207,7 @@ public class TelegramBot extends TelegramLongPollingBot {
               .collect(Collectors.toSet());
 
           if (allCurrencyPairNames.contains(callbackQueryData)) { // если это валютная пара
+            tempUser = mapper.toDto(user);
             var currencyPairName = callbackQueryData;
             tempUser.toggleShow(currencyPairName); // инвертируем настройку показа этой валютной пары
             InlineKeyboardMarkup keyboard = null;
@@ -255,8 +260,8 @@ public class TelegramBot extends TelegramLongPollingBot {
   // Суть задачи: получаем котировки фиатных валют и крипты и рассылаем сообщение с ними всем юзерам
   private MyTimer.MyTimerTask sendQuotesInfoMessageDailyTask = () -> {
     quotes.getRelevantQuotes();
-    sendToAll(quotes.getFiatCurrenciesQuotesMessage());
-    sendToAll(quotes.getCryptocurrenciesQuotesMessage());
+    //sendToAll(quotes.getFiatCurrenciesQuotesMessage()); TODO исправить
+    //sendToAll(quotes.getCryptocurrenciesQuotesMessage());
   };
 
   /**

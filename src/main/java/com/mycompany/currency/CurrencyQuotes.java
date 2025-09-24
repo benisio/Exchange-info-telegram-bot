@@ -6,7 +6,9 @@ import com.mycompany.my.MyTimer;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.mycompany.currency.MoexCurrencyPair.*;
 import static com.mycompany.currency.BybitCryptocurrencyPair.*;
@@ -72,37 +74,41 @@ public class CurrencyQuotes {
     }
 
     // Возвращает текст сообщения с котировками, которое будет отправлено пользователям
-    public String getFiatCurrenciesQuotesMessage() {
+    public String getFiatCurrenciesQuotesMessage(Set<String> displayableCurrencies) {
         String quotesUpdateTime = USD_RUB.getQuotesUpdateTime(); // получаем время последнего обновления котировок
 
         // формируем текст сообщения для отправки пользователям
         String messageHeader = "Курсы валют на " + quotesUpdateTime + " по мск:\n";
-        String messageBody = buildMessageBody(fiatCurrencyQuotes);
+        String messageBody = buildMessageBody(fiatCurrencyQuotes, displayableCurrencies);
         return messageHeader + messageBody;
     }
 
     // Возвращает текст сообщения с котировками криптовалют, которое будет отправлено пользователям
-    public String getCryptocurrenciesQuotesMessage() {
+    public String getCryptocurrenciesQuotesMessage(Set<String> displayableCurrencies) {
         // формируем текст сообщения с котировками криптовалют для отправки пользователям
         String messageHeader = "Котировки криптовалют на бирже Bybit:\n";
-        String messageBody = buildMessageBody(cryptoCurrencyQuotes);
+        String messageBody = buildMessageBody(cryptoCurrencyQuotes, displayableCurrencies);
         return messageHeader + messageBody;
     }
 
     // формирует тело текста (без заголовка) сообщения с котировками, которое будет отправлено пользователям
-    private String buildMessageBody(Map<CurrencyPair, Double> quotes) {
-        StringBuilder messageBuilder = new StringBuilder();
-        quotes.forEach((currencyPair, quote) -> {
-            String firstCurrency = currencyPair.getFirstCurrency().getCode();
-            String quoteStr = Utilities.formatDouble(quote);
-            String secondCurrency = currencyPair.getSecondCurrency().getCode();
+    private String buildMessageBody(Map<CurrencyPair, Double> quotes, Set<String> displayableCurrencies) {
+        //StringBuilder messageBuilder = new StringBuilder();
+        return quotes.entrySet().stream()
+            .filter(entry -> displayableCurrencies.contains(entry.getKey().name()))
+            .map(entry -> {
+              CurrencyPair currencyPair = entry.getKey();
+              Double quote = entry.getValue();
+              String firstCurrency = currencyPair.getFirstCurrency().getCode();
+              String quoteStr = Utilities.formatDouble(quote);
+              String secondCurrency = currencyPair.getSecondCurrency().getCode();
 
-            // метод String.format() заполняет шаблон строки (первый аргумент) строковыми вставками (последующие аргументы)
-            String currencyPairMessage = String.format("\n1 %s = %s %s", firstCurrency, quoteStr, secondCurrency);
-            messageBuilder.append(currencyPairMessage);
-        });
+              // метод String.format() заполняет шаблон строки (первый аргумент) строковыми вставками (последующие аргументы)
+              return String.format("\n1 %s = %s %s", firstCurrency, quoteStr, secondCurrency);
+              //messageBuilder.append(currencyPairMessage);
+        }).collect(Collectors.joining());
 
-        return messageBuilder.toString();
+        //return messageBuilder.toString();
     }
 
     private Map<CurrencyPair, Double> getQuotes(List<CurrencyPair> currencyPairs) {
