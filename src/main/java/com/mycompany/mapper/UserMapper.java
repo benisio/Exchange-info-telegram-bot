@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring") // или "default", если без Spring
+@Mapper(componentModel = "spring") // или "default",  если без Spring
 public interface UserMapper {
 
   UserDto toDto(User entity);
