@@ -1,24 +1,24 @@
 package com.mycompany;
 
-import com.mycompany.config.TelegramBotConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+
 import java.util.concurrent.TimeUnit;
 
 /**
  * Entrance point of the application.
  * */
 @SpringBootApplication
-public class Application {
+public class ExchangeInfoTelegramBotApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        var ctx = SpringApplication.run(ExchangeInfoTelegramBotApp.class, args);
 
         // создаем и регистрируем бота
-        TelegramBot bot = new TelegramBot(new TelegramBotConfig());
+        TelegramBot bot = ctx.getBean(TelegramBot.class);
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(bot);

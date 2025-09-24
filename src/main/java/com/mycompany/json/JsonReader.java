@@ -28,6 +28,7 @@ public class JsonReader {
      * Код данного метода станет гораздо понятнее, если читать его, параллельно смотря в этот пример.
      * @param jsonResponse json-ответ Мосбиржи, содержащий данные за текущую или последнюю (если текущая уже
      *                     закончилась) торговую сессию.
+     * @return что возвращает????
      */
     public static Map<String, String> parseLastTradingDayDataToMap(String jsonResponse) {
         // парсить данные из json будем в промежуточные объекты типа List<String>
@@ -89,7 +90,7 @@ public class JsonReader {
         JsonObject result = bybitResponse.get("result").getAsJsonObject(); // из bybitResponse получаем свойство "result" типа JsonObject
         JsonArray list = result.get("list").getAsJsonArray(); // из result получаем свойство "list" типа JsonArray, так как в нем лежат данные, которые нам нужно распарсит
 
-        // парсим содержимое list в ap. парсим из list.get(0), так как list - это массив типа JsonArray,
+        // парсим содержимое list в Map. парсим из list.get(0), так как list - это массив типа JsonArray,
         // состоящий из одного единственного элемента, таким образом мы получаем этот элемент и вот уже из него парсим
         Map<String, String> marketData = new Gson().fromJson(list.get(0), type);
 

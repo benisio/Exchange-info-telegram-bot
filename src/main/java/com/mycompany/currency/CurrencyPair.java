@@ -19,17 +19,17 @@ public interface CurrencyPair extends EnumInterface {
     double getQuote();
 
     /**
-     * Возвращает код базовой (первой из двух) валюты
+     * Возвращает базовую (первую из двух) валюту данной валютной пары
      */
     Currency getFirstCurrency();
 
     /**
-     * Возвращает код второй валюты
+     * Возвращает вторую валюту данной валютной пары
      */
     Currency getSecondCurrency();
 
     /**
-     *
+     * Возвращает краткое название данной валютной пары
      */
     String getShortName();
 

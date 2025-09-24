@@ -21,9 +21,9 @@ public enum BybitCryptocurrencyPair implements CurrencyPair {
     SOL_USDT("SOLUSDT", SOL, USDT), // Solana к USDT
     LINEA_USDT("LINEAUSDT", LINEA, USDT); // Linea к USDT
 
-    private final String ticker; // тикер данной валютной пары на бирже Bybit
-    private final Currency firstCurrency; // код базовой (первой из двух) валюты
-    private final Currency secondCurrency; // код второй валюты
+    private final String ticker; // тикер данной криптовалютной пары на бирже Bybit
+    private final Currency firstCurrency; // базовая валюта (первая из двух)
+    private final Currency secondCurrency; // вторая валюта
 
     /**
      * Возвращает котировку данной криптовалютной пары.
