@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.mycompany.currency.CurrencyQuotes.CRYPTO_CURRENCY_PAIRS;
+
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
@@ -43,20 +45,22 @@ public class TelegramBot extends TelegramLongPollingBot {
       @Value("${bot.username}") String username,
       @Value("${bot.token}") String token,
       UserService userService,
-      UserMapper mapper) {
+      UserMapper mapper,
+      CurrencyQuotes quotes) {
     super(token);
     this.username = username;
     this.token = token;
     this.userService = userService;
     this.mapper = mapper;
+    this.quotes = quotes;
   }
 
   @Override
   public String getBotUsername() {
-    return username; // этот параметр можно получить у телеграм-бота @BotFather https://t.me/BotFather
+    return username;
   }
 
-  private CurrencyQuotes quotes = new CurrencyQuotes();
+  private final CurrencyQuotes quotes;
   private User user;
   private UserDto tempUser;
 
@@ -172,6 +176,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
         case SHOW_ALL_CRYPTO -> { // кнопка "показывать все" в меню "отображение криптовалют"
+          tempUser = mapper.toDto(user);
           tempUser.enableCrypto();
           InlineKeyboardMarkup keyboard = createCryptoCurrenciesKeyboard(tempUser);
           editMessage(userId, messageWithKeyboard.getMessageId(),
@@ -259,7 +264,7 @@ public class TelegramBot extends TelegramLongPollingBot {
   // Задача (task) для выполнения по таймеру MyTimer.
   // Суть задачи: получаем котировки фиатных валют и крипты и рассылаем сообщение с ними всем юзерам
   private MyTimer.MyTimerTask sendQuotesInfoMessageDailyTask = () -> {
-    quotes.getRelevantQuotes();
+    //quotes.getRelevantQuotes();
     //sendToAll(quotes.getFiatCurrenciesQuotesMessage()); TODO исправить
     //sendToAll(quotes.getCryptocurrenciesQuotesMessage());
   };
@@ -376,7 +381,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
   // клавиатура для настройки отображения крипты
   private InlineKeyboardMarkup createCryptoCurrenciesKeyboard(UserDto user) {
-    return createCurrenciesKeyboard(Utilities.CRYPTO_CURRENCY_PAIRS, user);
+    return createCurrenciesKeyboard(CRYPTO_CURRENCY_PAIRS, user);
   }
 
   // клавиатура для настройки отображения валютных пар
@@ -401,7 +406,7 @@ public class TelegramBot extends TelegramLongPollingBot {
   }
 
   private String getCallbackDataForShowButton(List<CurrencyPair> currencyPairs) {
-    if (currencyPairs.equals(Utilities.CRYPTO_CURRENCY_PAIRS)) {
+    if (currencyPairs.equals(CRYPTO_CURRENCY_PAIRS)) {
       return SHOW_ALL_CRYPTO;
     }
     if (currencyPairs.equals(CurrencyQuotes.FIAT_CURRENCY_PAIRS)) {

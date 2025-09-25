@@ -1,8 +1,11 @@
-package com.mycompany;
+package com.mycompany.http;
 
 import com.mycompany.currency.CurrencyPair;
+import com.mycompany.currency.KucoinCryptocurrencyPair;
 import com.mycompany.currency.MoexCurrencyPair;
 import com.mycompany.currency.BybitCryptocurrencyPair;
+import com.mycompany.dto.KucoinApiResponse;
+import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -10,6 +13,8 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -17,12 +22,11 @@ import java.time.LocalDate;
 /**
  * Класс, содержащий статичные методы, создающие различные GET-запросы к биржам.
  */
+@RequiredArgsConstructor
+@Component
 public class HttpRequestFactory {
 
-    /**
-     * Запрещаем создавать экземпляры класса, так как он состоит только из статичных методов.
-     */
-    private HttpRequestFactory() {}
+  private final WebClient kucoinWebClient;
 
     /**
      * Отправляет http-запрос к API Мосбиржи (ISS MOEX API) на получение биржевых данных о торгах данной
@@ -85,9 +89,22 @@ public class HttpRequestFactory {
                         + ticker + ".json?iss.meta=off&iss.only=marketdata";
             }
         } else if (currencyPair instanceof BybitCryptocurrencyPair) {
-            return  "https://api.bybit.com/v5/market/tickers?category=spot&symbol=" + ticker;
+            // return  "https://api.bybit.com/v5/market/tickers?category=spot&symbol=" + ticker;
+            return  "https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=" + ticker;
         }
 
         throw new IllegalArgumentException();
     }
+
+  public KucoinApiResponse getKucoinMarketData(KucoinCryptocurrencyPair cryptocurrencyPair) {
+
+    return kucoinWebClient.get()
+        .uri(uriBuilder -> uriBuilder
+            .path("/api/v1/market/orderbook/level1")
+            .queryParam("symbol", cryptocurrencyPair.getTicker())
+            .build())
+        .retrieve()
+        .bodyToMono(KucoinApiResponse.class)
+        .block();
+  }
 }
