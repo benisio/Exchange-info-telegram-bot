@@ -9,6 +9,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
+import static com.mycompany.currency.CurrencyQuotes.CRYPTO_CURRENCY_PAIRS;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -51,11 +53,11 @@ public class UserDto {
   }
 
   public void enableCrypto() {
-    show(Utilities.CRYPTO_CURRENCY_PAIRS, true);
+    show(CRYPTO_CURRENCY_PAIRS, true);
   }
 
   public void disableCrypto() {
-    show(Utilities.CRYPTO_CURRENCY_PAIRS, false);
+    show(CRYPTO_CURRENCY_PAIRS, false);
   }
 
   private void show(List<CurrencyPair> currencyPairs, boolean show) {

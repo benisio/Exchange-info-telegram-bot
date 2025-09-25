@@ -2,6 +2,9 @@ package com.mycompany.currency;
 
 import com.mycompany.Utilities;
 import com.mycompany.my.MyTimer;
+import com.mycompany.service.KucoinMarketService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,9 +12,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.mycompany.currency.MoexCurrencyPair.*;
-import static com.mycompany.currency.BybitCryptocurrencyPair.*;
+import static com.mycompany.currency.KucoinCryptocurrencyPair.*;
 import static com.mycompany.currency.CalculatedQuoteCurrencyPair.*;
 
 /**
@@ -19,38 +23,32 @@ import static com.mycompany.currency.CalculatedQuoteCurrencyPair.*;
  * Оформил в виде отдельного класса, делегирующий свое поведение объекту Map, так как стандартного функционала Map
  * недостаточно, нужны дополнительные методы.
  */
+@RequiredArgsConstructor
+@Component
 public class CurrencyQuotes {
 
-    public static final List<CurrencyPair> ALL_CURRENCY_PAIRS = List.of(
-            USD_RUB,
-            EUR_RUB,
-            CNY_RUB,
-            TRY_RUB,
-            EUR_USD,
-            USD_KZT,
-            RUB_KZT, // эта валютная пара есть на KASE
-            USD_BYN,
+  public static final List<CurrencyPair> FIAT_CURRENCY_PAIRS = List.of(
+      USD_RUB,
+      EUR_RUB,
+      CNY_RUB,
+      TRY_RUB,
+      EUR_USD,
+      USD_KZT,
+      RUB_KZT,
+      USD_BYN
+  );
 
-            BTC_USDT,
-            ETH_USDT,
-            SOL_USDT,
-            LINEA_USDT
-    );
+  public static final List<CurrencyPair> CRYPTO_CURRENCY_PAIRS = List.of(KucoinCryptocurrencyPair.values());
 
-    public static final List<CurrencyPair> FIAT_CURRENCY_PAIRS = List.of(
-            USD_RUB,
-            EUR_RUB,
-            CNY_RUB,
-            TRY_RUB,
-            EUR_USD,
-            USD_KZT,
-            RUB_KZT,
-            USD_BYN
-    );
+  public static final List<CurrencyPair> ALL_CURRENCY_PAIRS =
+      Stream.of(FIAT_CURRENCY_PAIRS, CRYPTO_CURRENCY_PAIRS)
+      .flatMap(List::stream)
+      .toList();
 
     // заводим отдельные мапы для крипты и фиатных валют, так как будем отправлять их котировки в разных сообщениях
     private Map<CurrencyPair, Double> fiatCurrencyQuotes;
     private Map<CurrencyPair, Double> cryptoCurrencyQuotes;
+  private final KucoinMarketService kucoinMarketService;
 
     // Флаг актуальности котировки.
     // Нужен для того, чтобы при обращении к боту одновременно 100 юзеров, бот не отправлял одновременно 100 запросов к
@@ -63,7 +61,7 @@ public class CurrencyQuotes {
     public void getRelevantQuotes() { // метод называется get..., но возвращает void. Обычно геттеры возвращают значение. Корректный ли здесь нейминг ?
         if (!quotesRelevant) { // если котировки неактуальны, получаем актуальные и кладем в mapы
             fiatCurrencyQuotes = getQuotes(FIAT_CURRENCY_PAIRS); // фиатные валюты
-            cryptoCurrencyQuotes = getQuotes(Utilities.CRYPTO_CURRENCY_PAIRS); // крипта
+            cryptoCurrencyQuotes = getQuotes(CRYPTO_CURRENCY_PAIRS); // крипта
             quotesRelevant = true; // устанавливаем флаг актуальности котировок
 
             // длительность актуальности котировок
@@ -114,7 +112,11 @@ public class CurrencyQuotes {
     private Map<CurrencyPair, Double> getQuotes(List<CurrencyPair> currencyPairs) {
         Map<CurrencyPair, Double> quotes = new LinkedHashMap<>();
         for (CurrencyPair pair : currencyPairs) {
+          if (pair instanceof KucoinCryptocurrencyPair kucoinCryptocurrencyPair) {
+            quotes.put(pair, kucoinMarketService.getQuote(kucoinCryptocurrencyPair));
+          } else {
             quotes.put(pair, pair.getQuote());
+          }
         }
 
         return quotes;

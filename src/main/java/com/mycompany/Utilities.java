@@ -12,13 +12,6 @@ import static com.mycompany.currency.BybitCryptocurrencyPair.*;
  */
 public final class Utilities {
 
-    public static final List<CurrencyPair> CRYPTO_CURRENCY_PAIRS = List.of(
-            BTC_USDT,
-            ETH_USDT,
-            SOL_USDT,
-            LINEA_USDT
-    );
-
     /**
      * Запрещаем создавать экземпляры класса, так как он состоит только из статичных методов.
      */
