@@ -29,11 +29,6 @@ public class HttpRequestFactory {
   private final WebClient kucoinWebClient;
 
     /**
-     * Запрещаем создавать экземпляры класса, так как он состоит только из статичных методов.
-     */
-    //private HttpRequestFactory() {}
-
-    /**
      * Отправляет http-запрос к API Мосбиржи (ISS MOEX API) на получение биржевых данных о торгах данной
      * валютной пары за текущую или последнюю (если текущая уже закончилась) торговую сессию. Пример ответа на такой
      * запрос приведен в файле: src/example/moex_usd_rub_marketdata.json.
