@@ -1,4 +1,4 @@
-package com.mycompany;
+package com.mycompany.http;
 
 import com.mycompany.currency.CurrencyPair;
 import com.mycompany.currency.KucoinCryptocurrencyPair;

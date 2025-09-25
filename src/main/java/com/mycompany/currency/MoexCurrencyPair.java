@@ -1,6 +1,6 @@
 package com.mycompany.currency;
 
-import com.mycompany.HttpRequestFactory;
+import com.mycompany.http.HttpRequestFactory;
 import com.mycompany.json.JsonReader;
 import lombok.Getter;
 

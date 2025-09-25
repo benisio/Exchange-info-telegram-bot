@@ -1,6 +1,6 @@
 package com.mycompany.service;
 
-import com.mycompany.HttpRequestFactory;
+import com.mycompany.http.HttpRequestFactory;
 import com.mycompany.currency.KucoinCryptocurrencyPair;
 import com.mycompany.dto.KucoinApiResponse;
 import lombok.RequiredArgsConstructor;

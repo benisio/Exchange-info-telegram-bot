@@ -1,13 +1,7 @@
 package com.mycompany.currency;
 
-import com.mycompany.HttpRequestFactory;
-import com.mycompany.dto.KucoinApiResponse;
-import com.mycompany.json.JsonReader;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 import static com.mycompany.currency.Currency.BTC;
 import static com.mycompany.currency.Currency.ETH;
