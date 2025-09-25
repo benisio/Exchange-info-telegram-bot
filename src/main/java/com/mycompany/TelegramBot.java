@@ -57,10 +57,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 
   @Override
   public String getBotUsername() {
-    return username; // этот параметр можно получить у телеграм-бота @BotFather https://t.me/BotFather
+    return username;
   }
 
-  private final CurrencyQuotes quotes;/* = new CurrencyQuotes();*/
+  private final CurrencyQuotes quotes;
   private User user;
   private UserDto tempUser;
 
