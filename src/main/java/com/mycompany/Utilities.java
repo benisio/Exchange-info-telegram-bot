@@ -12,9 +12,6 @@ import static com.mycompany.currency.BybitCryptocurrencyPair.*;
  */
 public final class Utilities {
 
-    /**
-     * Запрещаем создавать экземпляры класса, так как он состоит только из статичных методов.
-     */
     private Utilities() {}
 
     /**
